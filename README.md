@@ -1,44 +1,44 @@
 # FODDTRADER
 
-Açık kaynak kodlu, otomatik sinyal işleyen ve Binance ile entegre çalışan bir masaüstü uygulamasıdır.
+An open-source desktop application that automatically processes signals and integrates with Binance.
 
-## Kurulum
+## Installation
 
-1. Gerekli kütüphaneler:
+1. Required libraries:
 
    - python-binance
    - telethon
 
-Kurulum:
+Installation:
 ```bash
 pip install python-binance telethon
 ```
-> Not: `tkinter` çoğu Python dağıtımında yüklüdür. Eğer eksikse Windows'ta `pip install tk` komutunu kullanabilirsiniz.
+> Note: `tkinter` is included in most Python distributions. If missing, on Windows you can use `pip install tk`.
 
-2. Uygulamayı başlatmak için:
+2. To start the application:
    ```bash
    python trader.py
    ```
 
-## .exe Olarak Derleme (PyInstaller)
+## Building as .exe (PyInstaller)
 
-1. PyInstaller'ı yükleyin:
+1. Install PyInstaller:
    ```bash
    pip install pyinstaller
    ```
-2. .exe oluşturmak için:
+2. To create the .exe:
    ```bash
    pyinstaller --onefile --windowed trader.py
    ```
-   - Çıktı dosyası `dist/trader.exe` içinde bulunur.
+   - The output file will be located in `dist/trader.exe`.
 
-## Açık Kaynak Kullanım
+## Open Source Usage
 
-- Kodun tamamı açık kaynaklıdır.
-- İsteyen herkes kodu inceleyebilir, geliştirebilir ve kendi bilgisayarında çalıştırabilir.
+- The entire code is open source.
+- Anyone can review, improve, and run the code on their own computer.
 
-## Notlar
+## Notes
 
-- Binance API anahtarlarınız ve Telegram API bilgileriniz sadece kendi bilgisayarınızda, yerel olarak saklanır; hiçbir şekilde başka bir sunucuya veya üçüncü tarafa gönderilmez.
-- Yine de anahtarlarınızı güvenli şekilde saklamaya özen gösteriniz.
-- Windows dışı sistemlerde de çalışır, ancak .exe sadece Windows içindir.
+- Your Binance API keys and Telegram API information are stored only locally on your own computer; they are never sent to any server or third party.
+- Please make sure to keep your keys safe.
+- The application also works on non-Windows systems, but the .exe is only for Windows.
