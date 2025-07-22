@@ -626,7 +626,7 @@ class SignalBotApp:
             entry_dec = signal.get('entry_dec', 2)
             sl_dec = signal.get('sl_dec', 2)
             tp_dec = signal.get('tp_dec', 2)
-            log_line = f"{emoji} {symbol} {side} | Entry: {entry:.{entry_dec}f} | Risk: {risk_val.title()}"
+            log_line = f"{emoji} {symbol} {side} | Entry: {entry:.{entry_dec}f}"
             if sl is not None:
                 log_line += f" | SL: {sl:.{sl_dec}f}"
             if tp is not None:
