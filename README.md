@@ -28,7 +28,7 @@ pip install python-binance telethon
    ```
 2. To create the .exe:
    ```bash
-   pyinstaller --onefile --windowed trader.py
+   pyinstaller --onefile --windowed --icon=v2.ico --add-data "v2.ico;." trader.py
    ```
    - The output file will be located in `dist/trader.exe`.
 
