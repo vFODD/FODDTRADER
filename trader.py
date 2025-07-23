@@ -24,8 +24,8 @@ class SignalBotApp:
         self.is_running = False
         self._animation_active = False
         self.log(msg)
-        self.update_status("hata")
-        self.start_btn.config(state=tk.NORMAL, text="Başlat", font=("Segoe UI", 11, "bold"))
+        self.update_status("error")
+        self.start_btn.config(state=tk.NORMAL, text="Start", font=("Segoe UI", 11, "bold"))
         self.stop_btn.config(state=tk.DISABLED)
         self.set_entries_state("normal")
         self.root.update()
@@ -52,11 +52,11 @@ class SignalBotApp:
                             except Exception as e:
                                 pass
             except Exception as e:
-                self.log(f"Otomatik emir kontrol hatası: {e}")
+                self.log(f"Auto order check error: {e}")
             time.sleep(3600)
     def start_btn_anim(self):
         if not self.is_running or not getattr(self, '_animation_active', False):
-            self.start_btn.config(text="Başlat", font=("Segoe UI", 11, "bold"))
+            self.start_btn.config(text="Start", font=("Segoe UI", 11, "bold"))
             return
         self._anim_counter = getattr(self, '_anim_counter', 0) + 1
         num = (self._anim_counter % 15) + 1
@@ -107,9 +107,9 @@ class SignalBotApp:
         risk_frame.pack(side="right", padx=15, pady=5)
         self.risk_level = tk.StringVar(value="medium")
         self.risk_info = {
-            "low": ("🧱", "[0.1x - 1x] Dinamik Kaldıraç", "Her işlemde bakiyenizin %10'u ile işlem açılır."),
-            "medium": ("⚖️", "[0.5x - 5x] Dinamik Kaldıraç", "Her işlemde bakiyenizin %50'si ile işlem açılır."),
-            "high": ("🔥", "[1x - 10x] Dinamik Kaldıraç", "Her işlemde bakiyenizin %100'ü ile işlem açılır.")
+            "low": ("🧱", "[0.1x - 1x] Dynamic Leverage", "Each trade opens with 10% of your balance."),
+            "medium": ("⚖️", "[0.5x - 5x] Dynamic Leverage", "Each trade opens with 50% of your balance."),
+            "high": ("🔥", "[1x - 10x] Dynamic Leverage", "Each trade opens with 100% of your balance.")
         }
         def set_risk(level):
             if low_btn['state'] == tk.DISABLED:
@@ -176,17 +176,17 @@ class SignalBotApp:
 
         def show_telegram_info():
             info = (
-                "Telegram API ID ve API Hash Nasıl Alınır?\n\n"
-                "1. https://my.telegram.org adresine gidin.\n"
-                "2. Telegram hesabınızla giriş yapın (telefon numaranızı +90xxx şeklinde girin, Telegram’dan gelen kodu yazın).\n"
-                "3. Giriş yaptıktan sonra 'API development tools' bölümüne tıklayın.\n"
-                "4. 'Create new application' butonuna tıklayın.\n"
-                "5. Uygulama adı ve kısa bir açıklama girin.\n"
-                "6. 'Create application' butonuna basın.\n"
-                "7. Açılan sayfada API ID ve API Hash bilgilerinizi göreceksiniz.\n"
-                "8. Bu bilgileri kopyalayıp programa girin."
+                "How to get Telegram API ID and API Hash?\n\n"
+                "1. Go to https://my.telegram.org.\n"
+                "2. Log in with your Telegram account (enter your phone number, enter the code from Telegram).\n"
+                "3. After logging in, click on 'API development tools'.\n"
+                "4. Click the 'Create new application' button.\n"
+                "5. Enter an application name and a short description.\n"
+                "6. Click the 'Create application' button.\n"
+                "7. On the next page, you will see your API ID and API Hash.\n"
+                "8. Copy these details and enter them into the program."
             )
-            messagebox.showinfo("Telegram API Bilgisi", info)
+            messagebox.showinfo("Telegram API Info", info)
 
         def add_entry(row, label, width, var, placeholder, icon=None, info_button=False):
             if icon:
@@ -197,10 +197,10 @@ class SignalBotApp:
             label_widget = tk.Label(form_box, text=label, font=("Segoe UI", 10), fg="#dfe6e9", bg="#2d3436")
             label_widget.grid(row=row, column=col, sticky="w", padx=5, pady=7)
             if info_button:
-                info_btn = tk.Button(form_box, text="API ID ve HASH ALMA", font=("Segoe UI", 8, "bold"), width=22, height=1, bg="#636e72", fg="white", relief="flat", cursor="hand2", command=show_telegram_info)
+                info_btn = tk.Button(form_box, text="Get API ID and HASH", font=("Segoe UI", 8, "bold"), width=22, height=1, bg="#636e72", fg="white", relief="flat", cursor="hand2", command=show_telegram_info)
                 info_btn.grid(row=row, column=col+1, padx=(112,10), pady=7, sticky="w")
             validate_cmd = None
-            if label.startswith("Telegram Telefon"):
+            if label.startswith("Telegram Phone"):
                 def validate_phone(P):
                     return len(P) <= 10 and P.isdigit() or P == ""
                 validate_cmd = form_box.register(validate_phone)
@@ -235,7 +235,7 @@ class SignalBotApp:
         self.binance_secret_entry = add_entry(1, "Binance API Secret:", 40, self.binance_secret_var, "Secret Key", "🔒")
         self.tg_id_entry = add_entry(2, "Telegram API ID:", 10, self.tg_id_var, "API ID", "🆔", info_button=True)
         self.tg_hash_entry = add_entry(3, "Telegram API Hash:", 32, self.tg_hash_var, "API Hash", "#")
-        self.tg_phone_entry = add_entry(4, "Telegram Telefon (535xxxxxxx):", 12, self.tg_phone_var, "535xxxxxxxx", "📱")
+        self.tg_phone_entry = add_entry(4, "Telegram Phone (include country code):", 16, self.tg_phone_var, "+1234567890", "📱")
 
         if self.config_data:
             for i in [2, 3, 4]:
@@ -246,9 +246,9 @@ class SignalBotApp:
 
         btn_frame = tk.Frame(main_frame, bg="#23272f")
         btn_frame.pack(pady=15)
-        self.start_btn = tk.Button(btn_frame, text="Başlat", command=self.start_bot, font=("Segoe UI", 11, "bold"), bg="#00b894", fg="white", activebackground="#00cec9", activeforeground="white", relief="flat", width=12, bd=0, cursor="hand2")
+        self.start_btn = tk.Button(btn_frame, text="Start", command=self.start_bot, font=("Segoe UI", 11, "bold"), bg="#00b894", fg="white", activebackground="#00cec9", activeforeground="white", relief="flat", width=12, bd=0, cursor="hand2")
         self.start_btn.grid(row=0, column=0, padx=10)
-        self.stop_btn = tk.Button(btn_frame, text="Durdur", command=self.stop_bot, state=tk.DISABLED, font=("Segoe UI", 11, "bold"), bg="#636e72", fg="white", activebackground="#b2bec3", activeforeground="white", relief="flat", width=12, bd=0, cursor="hand2")
+        self.stop_btn = tk.Button(btn_frame, text="Stop", command=self.stop_bot, state=tk.DISABLED, font=("Segoe UI", 11, "bold"), bg="#636e72", fg="white", activebackground="#b2bec3", activeforeground="white", relief="flat", width=12, bd=0, cursor="hand2")
         self.stop_btn.grid(row=0, column=1, padx=10)
         self.set_risk_buttons_state(tk.NORMAL)
 
@@ -262,7 +262,7 @@ class SignalBotApp:
         self.stop_btn.bind("<Enter>", on_enter2)
         self.stop_btn.bind("<Leave>", on_leave2)
 
-        log_frame = tk.LabelFrame(main_frame, text="Loglar", font=("Segoe UI", 10, "bold"), fg="#00b894", bg="#23272f", bd=2)
+        log_frame = tk.LabelFrame(main_frame, text="Logs", font=("Segoe UI", 10, "bold"), fg="#00b894", bg="#23272f", bd=2)
         log_frame.pack(padx=10, pady=(0, 15), fill="both", expand=True)
         self.log_area = scrolledtext.ScrolledText(log_frame, width=80, height=14, state='disabled', font=("Consolas", 10), bg="#1e2127", fg="#dfe6e9", relief="flat", bd=2, highlightbackground="#00b894", highlightcolor="#00b894")
         self.log_area.pack(fill="both", expand=True, padx=5, pady=5)
@@ -283,27 +283,27 @@ class SignalBotApp:
         self.log_area.insert(tk.END, f"{datetime.datetime.now().strftime('%H:%M:%S')} - {msg}\n")
         self.log_area.see(tk.END)
         self.log_area.config(state='disabled')
-    def update_status(self, durum):
-        if durum == "giris":
-            self.status_var.set("✅ Giriş başarılı. Program başlatıldı.")
-        elif durum == "sinyal":
-            self._sinyal_anim_counter = 0
-            self.sinyal_animasyon()
-        elif durum == "durdur":
-            self.status_var.set("⏹️ Durduruldu.")
-        elif durum == "hata":
-            self.status_var.set("Hata oluştu!")
+    def update_status(self, status):
+        if status == "login":
+            self.status_var.set("✅ Login successful. Program started.")
+        elif status == "signal":
+            self._signal_anim_counter = 0
+            self.signal_animation()
+        elif status == "stop":
+            self.status_var.set("⏹️ Stopped.")
+        elif status == "error":
+            self.status_var.set("An error occurred!")
         else:
-            self.status_var.set(durum)
+            self.status_var.set(status)
 
-    def sinyal_animasyon(self):
+    def signal_animation(self):
         if not self.is_running:
             return
         emoji = "🔄"
-        nokta_sayisi = (self._sinyal_anim_counter % 4) + 1
-        self.status_var.set(f"{emoji} Sinyal bekleniyor{'.' * nokta_sayisi}")
-        self._sinyal_anim_counter += 1
-        self.root.after(2000, self.sinyal_animasyon)
+        dot_count = (self._signal_anim_counter % 4) + 1
+        self.status_var.set(f"{emoji} Waiting for signal{'.' * dot_count}")
+        self._signal_anim_counter += 1
+        self.root.after(2000, self.signal_animation)
 
     def start_bot(self):
         self._telegram_stop_event = threading.Event()
@@ -312,7 +312,7 @@ class SignalBotApp:
         self.is_running = False
         self._animation_active = False
         self.status_var.set("")
-        self.update_status("Bağlantı başlatılıyor...")
+        self.update_status("Connection starting...")
         self.root.update()
 
         def validate_fields():
@@ -323,20 +323,16 @@ class SignalBotApp:
                 binance_secret in ["", "Secret Key"] or
                 tg_id in ["", "API ID"] or
                 tg_hash in ["", "API Hash"] or
-                tg_phone in ["", "5XXXXXXXXX"]):
-                self.handle_error("Tüm alanları doldurunuz!")
-                messagebox.showerror("Hata", "Tüm alanları doldurunuz!")
+                tg_phone in ["", "+1234567890"]):
+                self.handle_error("Please fill in all fields!")
+                messagebox.showerror("Error", "Please fill in all fields!")
                 return False, None, None, None
             try:
                 tg_id_int = int(tg_id)
             except ValueError:
-                self.handle_error("Telegram API ID alanı sayısal olmalıdır!")
-                messagebox.showerror("Hata", "Telegram API ID alanı sayısal olmalıdır!")
+                self.handle_error("Telegram API ID must be numeric!")
+                messagebox.showerror("Error", "Telegram API ID must be numeric!")
                 return False, None, None, None
-            if tg_phone.startswith('0'):
-                tg_phone = tg_phone[1:]
-            if not tg_phone.startswith('+90'):
-                tg_phone = '+90' + tg_phone
             return True, tg_id_int, tg_hash, tg_phone
 
         def after_telegram_success(new_session_flag, loop=None):
@@ -348,38 +344,39 @@ class SignalBotApp:
                         try:
                             is_auth = await self.tg_client.is_user_authorized()
                         except Exception as e:
-                            self.log(f"Yetkilendirme kontrolü hatası: {e}")
+                            self.log(f"Authorization check error: {e}")
                         if is_auth:
                             session_obj = getattr(self.tg_client, 'session', None)
                             if session_obj is not None:
                                 try:
                                     session_obj.save()
                                 except Exception as e:
-                                    self.log(f"Session kaydedilemedi: {e}")
+                                    self.log(f"Session could not be saved: {e}")
                             else:
-                                self.log("Session nesnesi bulunamadı, kaydedilemedi.")
+                                self.log("Session object not found, could not be saved.")
                         else:
-                            self.log("Session kaydedilmedi: Telegram yetkilendirme başarısız.")
+                            self.log("Session not saved: Telegram authorization failed.")
                     for i in [2, 3, 4]:
                         for widget in self.tg_id_entry.master.grid_slaves(row=i):
                             widget.grid_remove()
                     self.set_entries_state("normal")
                 except Exception as e:
-                    self.log(f"Config dosyası kaydedilemedi: {e}")
+                    self.log(f"Config file could not be saved: {e}")
 
             if new_session_flag and loop is not None:
                 try:
                     loop.run_until_complete(save_session_if_authorized())
                 except Exception as e:
-                    self.log(f"Session kaydetme coroutine hatası: {e}")
+                    self.log(f"Session save coroutine error: {e}")
+                    pass
             if (new_session_flag or self.config_data) and self.client is not None:
                 self.is_running = True
                 self._animation_active = True
                 self.set_risk_buttons_state(tk.DISABLED)
                 self.start_btn_anim()
-                self.update_status("giris")
+                self.update_status("login")
                 self.root.update()
-                self.update_status("sinyal")
+                self.update_status("signal")
                 self.root.update()
                 self.binance_key_entry.config(state="disabled")
                 self.binance_secret_entry.config(state="disabled")
@@ -388,7 +385,7 @@ class SignalBotApp:
                     self._cleanup_thread_started = True
             else:
                 self.set_risk_buttons_state(tk.NORMAL)
-                self.handle_error("Bağlantı başlatılamadı.")
+                self.handle_error("Connection could not be started.")
 
         def binance_test():
             try:
@@ -397,7 +394,7 @@ class SignalBotApp:
                 self.client = client
                 self.run_bot(after_telegram_success)
             except Exception as e:
-                self.root.after(0, lambda e=e: self.handle_error(f"Binance bağlantı hatası: {e}"))
+                self.root.after(0, lambda e=e: self.handle_error(f"Binance connection error: {e}"))
 
         if self.config_data:
             self.binance_key = binance_key
@@ -408,8 +405,8 @@ class SignalBotApp:
             self.start_btn.config(state=tk.DISABLED)
             self.stop_btn.config(state=tk.NORMAL)
             if binance_key in ["", "API Key"] or binance_secret in ["", "Secret Key"]:
-                self.handle_error("Binance API Key ve Secret alanlarını doldurunuz!")
-                messagebox.showerror("Hata", "Binance API Key ve Secret alanlarını doldurunuz!")
+                self.handle_error("Please fill in Binance API Key and Secret fields!")
+                messagebox.showerror("Error", "Please fill in Binance API Key and Secret fields!")
                 return
             threading.Thread(target=binance_test, daemon=True).start()
             return
@@ -429,15 +426,15 @@ class SignalBotApp:
     def stop_bot(self):
         self.set_risk_buttons_state(tk.NORMAL)
         if not self.is_running:
-            self.log("⛔ Bot zaten durdurulmuş.")
+            self.log("⛔ Bot is already stopped.")
             return
 
         self.is_running = False
         self._animation_active = False
-        self.start_btn.config(state=tk.NORMAL, text="Başlat", font=("Segoe UI", 11, "bold"))
+        self.start_btn.config(state=tk.NORMAL, text="Start", font=("Segoe UI", 11, "bold"))
         self.stop_btn.config(state=tk.DISABLED)
-        self.update_status("durdur")
-        self.log("⛔ Bot durduruldu.")
+        self.update_status("stop")
+        self.log("⛔ Bot stopped.")
         self.set_entries_state("normal")
 
         if hasattr(self, '_telegram_stop_event'):
@@ -462,7 +459,7 @@ class SignalBotApp:
                 loop.run_until_complete(disconnect_and_save())
                 loop.close()
             except Exception as e:
-                self.log(f"Async stop hatası: {e}")
+                self.log(f"Async stop error: {e}")
 
         threading.Thread(target=run_async_task, daemon=True).start()
 
@@ -486,13 +483,13 @@ class SignalBotApp:
                     self._new_session_flag = True
                     code_holder = {'code': None}
                     def get_code():
-                        code_holder['code'] = simpledialog.askstring("Telegram Doğrulama", "Telegram'dan gelen kodu giriniz:")
+                        code_holder['code'] = simpledialog.askstring("Telegram Verification", "Enter the code sent from Telegram:")
                     self.root.after(0, get_code)
                     while code_holder['code'] is None:
                         self.root.update()
                     if code_holder['code'] is None or code_holder['code'].strip() == "":
-                        self.handle_error("Telegram doğrulama kodu girilmedi, bağlantı iptal edildi.")
-                        raise Exception("Telegram doğrulama kodu girilmedi.")
+                        self.handle_error("Telegram verification code not entered, connection cancelled.")
+                        raise Exception("Telegram verification code not entered.")
                     return code_holder['code']
 
                 if not self.locked:
@@ -500,7 +497,7 @@ class SignalBotApp:
                     try:
                         self.tg_client.start(phone=self.tg_phone, code_callback=code_callback)
                     except Exception as e:
-                        self.handle_error("Telegram doğrulama kodu girilmediği için bağlantı iptal edildi.")
+                        self.handle_error("Connection cancelled because Telegram verification code was not entered.")
                         return
                 else:
                     self.tg_client.start(phone=self.tg_phone)
@@ -508,20 +505,20 @@ class SignalBotApp:
                 is_authorized = loop.run_until_complete(self.tg_client.is_user_authorized())
 
                 if (not self.locked and not self._new_session_flag) or not is_authorized:
-                    self.handle_error("Telegram giriş hatası: Yetkilendirme başarısız.")
+                    self.handle_error("Telegram login error: Authorization failed.")
                     after_telegram_success(False, loop)
                     return
 
                 self.log_area.config(state='normal')
                 self.log_area.delete('1.0', tk.END)
                 self.log_area.config(state='disabled')
-                self.log("⚡ Program başlatıldı. Sinyal gelince işleme girecek..")
+                self.log("⚡ Program started. Will enter trade when signal arrives..")
                 after_telegram_success(self._new_session_flag if not self.locked else True, loop)
 
                 try:
                     loop.run_until_complete(self.tg_client.run_until_disconnected())
                 except Exception as e:
-                    self.log(f"⚠️ Telegram bağlantısı sonlandırılırken hata oluştu: {e}")
+                    self.log(f"⚠️ Error occurred while disconnecting Telegram: {e}")
 
             except Exception as e:
                 error_str = str(e)
@@ -532,11 +529,11 @@ class SignalBotApp:
                     "CHANNEL_PRIVATE" in error_str or
                     "CHAT_WRITE_FORBIDDEN" in error_str
                 ):
-                    self.handle_error("Aboneliğiniz sona erdi. Lütfen aboneliğinizi yenileyin.")
-                    messagebox.showerror("Abonelik Hatası", "Aboneliğiniz sona erdi. Lütfen aboneliğinizi yenileyin.")
+                    self.handle_error("Your subscription has expired. Please renew your subscription.")
+                    messagebox.showerror("Subscription Error", "Your subscription has expired. Please renew your subscription.")
                 else:
-                    self.handle_error("❌ Telegram hata")
-                    self.log("Yeniden bağlanma denenecek...")
+                    self.handle_error("❌ Telegram error")
+                    self.log("Reconnect will be attempted...")
                     time.sleep(10)
             finally:
                 try:
@@ -590,7 +587,7 @@ class SignalBotApp:
             info = self.client.futures_exchange_info()
             symbol_info = next((s for s in info['symbols'] if s['symbol'] == symbol), None)
             if not symbol_info:
-                self.log(f"Sembol bilgisi bulunamadı: {symbol}")
+                self.log(f"Symbol info not found: {symbol}")
                 return
             risk = getattr(self, 'risk_level', None)
             risk_val = risk.get() if risk else 'high'
@@ -644,7 +641,7 @@ class SignalBotApp:
                         positionSide=side
                     )
                 except Exception as e:
-                    self.log(f"{order_type} emri hatası: {e}")
+                    self.log(f"{order_type} order error: {e}")
 
             try:
                 self.client.futures_create_order(
@@ -655,7 +652,7 @@ class SignalBotApp:
                     positionSide=side
                 )
             except Exception as e:
-                self.log(f"Pozisyon açma hatası: {e}")
+                self.log(f"Open position error: {e}")
             if sl:
                 sl_side = 'SELL' if order_side == 'BUY' else 'BUY'
                 create_exit_order('STOP_MARKET', sl, sl_side)
@@ -663,7 +660,7 @@ class SignalBotApp:
                 tp_side = 'SELL' if order_side == 'BUY' else 'BUY'
                 create_exit_order('TAKE_PROFIT_MARKET', tp, tp_side)
         except Exception as e:
-            self.log(f"Hata oluştu: {e}")
+            self.log(f"Error occurred: {e}")
 
 def already_running():
     mutex = ctypes.windll.kernel32.CreateMutexW(None, 1, "FODDTRADER_UNIQUE_MUTEX")
@@ -673,7 +670,7 @@ def already_running():
     return False
 
 if already_running():
-    messagebox.showerror("Uygulama zaten açık", "FODDTRADER zaten çalışıyor!")
+    messagebox.showerror("Application already open", "FODDTRADER is already running!")
     sys.exit()
 
 if __name__ == "__main__":
